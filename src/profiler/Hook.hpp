@@ -41,8 +41,16 @@ class PyHook {
 
         /** @brief Path to source code file. */
         std::string src_file;
-
+        
+        /** @brief Whether the PyHook has been properly initialized or not (hacky fix). */
+        bool is_initialized;
+        
     public:
+        /**
+         * @brief Empty initializer
+         */
+        PyHook();
+
         /**
          * @brief Initializes a new PyHook object.
          */

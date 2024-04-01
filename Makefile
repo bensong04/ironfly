@@ -5,6 +5,7 @@ PYDEV = $(shell $(PYTHON)-config --cflags --embed)
 BINARIES = bin
 SRC = src
 
+SRC_FILES = $(SRC)/ironfly.cpp $(SRC)/profiler/Hook.cpp $(SRC)/sys/RandomSystems.cpp
 WARNINGS = -Wall -Wstrict-prototypes
 
 FLAGS = $(WARNINGS) -std=$(CPP_STANDARD)
@@ -16,5 +17,5 @@ packages:
 	$(PYTHON) -m pip install torchvision
 
 all:
-	g++ $(FLAGS) $(SRC)/ironfly.cpp -I$(SRC) $(PYDEV) -o $(BINARIES)/ironfly $(LD_FLAGS)
+	g++ $(FLAGS) $(SRC_FILES) -I$(SRC) $(PYDEV) -o $(BINARIES)/ironfly $(LD_FLAGS)
 

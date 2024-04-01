@@ -2,13 +2,20 @@
  * @author Ben Song <benedict04song@gmail.com>
  */
 #include <csignal>
+#include <iostream>
 #include "./Hook.hpp"
 
 #ifdef DEBUG
-#define dbg_assert(...) assert(__VA_ARGS__)
+#define dbg_assert(expr) assert(expr)
 #else
-#define dbg_assert(...) (void)
+#define dbg_discard_expr_(...) ((void)((0) && printf(__VA_ARGS__)))
+#define dbg_assert(expr) dbg_discard_expr_("%d", !(expr))
 #endif
+
+PyHook::PyHook() {
+    // Improper initialization
+    this->is_initialized = false;
+}
 
 PyHook::PyHook(std::string src) {
     // Initialize interpreter as being stopped
@@ -23,6 +30,7 @@ PyHook::PyHook(std::string src) {
     this->state = PyGILState_Ensure();
     Py_SetProgramName(PY_VER);
     Py_Initialize();
+    this->is_initialized = true;
 }
 
 void PyHook::execute() {
@@ -63,7 +71,9 @@ snapshot_t PyHook::cycle() {
 PyHook::~PyHook() {
     // Do not destroy an unstopped interpreter
     dbg_assert(this->stopped);
-    Py_FinalizeEx();
-    PyGILState_Release(this->state);
+    if (this->is_initialized) {
+        Py_FinalizeEx();
+        PyGILState_Release(this->state);
+    }
 }
 
